@@ -1,5 +1,6 @@
 import React, { useReducer, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const INPUT_CHANGE = 'INPUT_CHANGE';
 const INPUT_BLUR = 'INPUT_BLUR';
@@ -30,17 +31,17 @@ const Input = props => {
 
     });
 
-const { onInputChange, id } = props;
+    const { onInputChange, id } = props;
 
     //Page data to parent
     useEffect(() => {
         //identify when this should run.
-        if (inputState.touched){
+        if (inputState.touched) {
             onInputChange(id, inputState.value, inputState.isValid); // pass to parent
         }
-        
+
     }, [
-        inputState, 
+        inputState,
         onInputChange,
         id
     ]  //requirements to run
@@ -67,25 +68,37 @@ const { onInputChange, id } = props;
         }
 
 
-        dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid})
+        dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid })
     }
 
     const lostFocusHandler = () => {
-        dispatch({type: INPUT_BLUR})
+        dispatch({ type: INPUT_BLUR })
     }
 
     return (
-        <View style={styles.formControl}>
-            <Text style={styles.label}>{props.label}</Text>
-            <TextInput
-                {...props}
-                style={styles.input}
-                value={inputState.value}
-                onChangeText={textChangeHandler}
-                onBlur={lostFocusHandler}
-            />
-            {!inputState.isValid && <Text>{props.errorText}</Text>}
-        </View>
+        <KeyboardAvoidingView 
+            behavior="padding" 
+            keyboardVerticalOffset={100}
+            style={{flex: 1}}
+            >
+            <ScrollView>
+                <View style={styles.formControl}>
+                    <Text style={styles.label}>{props.label}</Text>
+                    <TextInput
+                        {...props}
+                        style={styles.input}
+                        value={inputState.value}
+                        onChangeText={textChangeHandler}
+                        onBlur={lostFocusHandler}
+                    />
+                    {!inputState.isValid && inputState.touched && (
+                        <View style={styles.errorContainer}>
+                            <Text style={styles.errorText}>{props.errorText}</Text>
+                        </View>
+                    )}
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 
 };
@@ -104,6 +117,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ccc',
         borderBottomWidth: 1
 
+    },
+    errorContainer: {
+        marginVertical: 5
+    },
+    errorText: {
+        fontFamily: 'open-sans',
+        color: 'red',
+        fontSize: 13
     }
 
 });
