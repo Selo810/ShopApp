@@ -30,10 +30,22 @@ const ProductOverviewScreen = props => {
         setIsLoading(false);
     }, [dispatch, setIsLoading, setError])
 
+    //listen for changes in the database 
+    useEffect(() => {
+       const willFocusSub =  props.navigation.addListener(
+           'willFocus', 
+           loadProducts
+        );
+
+        return () => {
+            willFocusSub.remove();
+        };
+    }, [loadProducts]);
+
     //fetch products after dispatch is initialized 
     useEffect(() => {
 
-        loadProducts()
+        loadProducts();
 
     }, [dispatch, loadProducts])
 
