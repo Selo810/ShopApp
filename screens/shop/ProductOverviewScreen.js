@@ -32,10 +32,7 @@ const ProductOverviewScreen = props => {
 
     //listen for changes in the database 
     useEffect(() => {
-       const willFocusSub =  props.navigation.addListener(
-           'willFocus', 
-           loadProducts
-        );
+       const willFocusSub = props.navigation.addListener('willFocus', loadProducts);
 
         return () => {
             willFocusSub.remove();
