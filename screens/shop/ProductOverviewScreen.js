@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, Text, Platform, Button } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from 'react-native-gesture-handler';
@@ -7,6 +7,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/UI/HeaderButton';
 import ProductItem from '../../components/shop/ProductItem';
 import * as cartActions from '../../store/actions/cart';
+import * as productsActions from '../../store/actions/products';
 import Colors from '../../constants/Colors';
 
 const ProductOverviewScreen = props => {
@@ -14,6 +15,12 @@ const ProductOverviewScreen = props => {
     //Used to get data from state
     const products = useSelector(State => State.products.availableProducts)
     const dispatch = useDispatch();
+
+
+    //fetch products after dispatch is initialized 
+    useEffect(() => {
+        dispatch(productsActions.fetchProducts())
+    }, [dispatch])
 
     const selectItemHandler = (id, title) => {
         //passing Params to uri
