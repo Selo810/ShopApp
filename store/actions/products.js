@@ -9,25 +9,36 @@ export const fetchProducts = () => {
 
     return async dispatch => {
 
-        //Get products 
-        const response = await fetch('https://rn-complete-guide-3cfd6.firebaseio.com/products.json');
+        try {
+            //Get products 
+            const response = await fetch('https://rn-complete-guide-3cfd6.firebaseio.com/products.json');
 
-        const resdata = await response.json();
-        const loadedProducts = [];
+            if(!response.ok) {
+                throw new Error('Something went wrong!')
+            }
 
-        //loop throught object to push to array for use
-        for(const key in resdata){
-            loadedProducts.push(new Product(
-                key,
-                'u1',
-                resdata[key].title,
-                resdata[key].imageUrl,
-                resdata[key].description,
-                resdata[key].price
+            const resdata = await response.json();
+            const loadedProducts = [];
+
+            //loop throught object to push to array for use
+            for (const key in resdata) {
+                loadedProducts.push(new Product(
+                    key,
+                    'u1',
+                    resdata[key].title,
+                    resdata[key].imageUrl,
+                    resdata[key].description,
+                    resdata[key].price
                 )
-            );
+                );
+            }
+            dispatch({ type: SET_PRODUCTS, products: loadedProducts });
+        } catch (err) {
+            throw err;
         }
-        dispatch({type: SET_PRODUCTS, products: loadedProducts});
+
+
+
     }
 }
 
