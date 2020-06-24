@@ -1,11 +1,23 @@
 import React, { useState, useEffect, useCallback, useReducer } from 'react';
-import { View, Text, TextInput, ScrollView, StyleSheet, Platform, Alert } from 'react-native';
+import { 
+    View, 
+    Text, 
+    TextInput, 
+    ScrollView, 
+    StyleSheet, 
+    Platform, 
+    Alert, 
+    ActivityIndicator, 
+    Button
+} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
 
 import HeaderButton from '../../components/UI/HeaderButton';
 import * as productActions from '../../store/actions/products';
 import Input from '../../components/UI/Input';
+import * as productsActions from '../../store/actions/products';
+import Colors from '../../constants/Colors';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -36,6 +48,8 @@ const formReducer = (state, action) => {
 };
 
 const EditProductScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
     //Check if user is editing or adding a new record
     const prodId = props.navigation.getParam('productId');
     const editedProduct = useSelector(
@@ -68,8 +82,18 @@ const EditProductScreen = props => {
     // const [price, setPrice] = useState( '');
     // const [description, setDescription] = useState(editedProduct ? editedProduct.description : '');
 
+    useEffect(() => {
+
+        if(error){
+            Alert.alert('Error: ', error, [
+                { text: 'Okay' }
+            ]);
+        }
+
+    }, [error])
+
     //Create Function to pass to nav
-    const submitHandler = useCallback(() => {
+    const submitHandler = useCallback(async () => {
         if (!formState.formIsValid) {
             Alert.alert('Wrong input!', 'Please check the errors in the form.', [
                 { text: 'Okay' }
@@ -77,27 +101,36 @@ const EditProductScreen = props => {
             return;
         }
 
-        if (editedProduct) {
-            dispatch(
-                productActions.updateProduct(
-                    prodId, 
-                    formState.inputValues.title, 
-                    formState.inputValues.description, 
-                    formState.inputValues.imageUrl
-                    )
-                )
-        } else {
-            dispatch(
-                productActions.createProduct(
-                    formState.inputValues.title, 
-                    formState.inputValues.description, 
-                    formState.inputValues.imageUrl, 
-                    +formState.inputValues.price
-                    )
-            )
+        setError(null);
+        setIsLoading(true);
+        try{
+            if (editedProduct) {
+                await dispatch(
+                     productActions.updateProduct(
+                         prodId, 
+                         formState.inputValues.title, 
+                         formState.inputValues.description, 
+                         formState.inputValues.imageUrl
+                         )
+                     )
+             } else {
+                await dispatch(
+                     productActions.createProduct(
+                         formState.inputValues.title, 
+                         formState.inputValues.description, 
+                         formState.inputValues.imageUrl, 
+                         +formState.inputValues.price
+                         )
+                 )
+             }
+             props.navigation.goBack();
+        }catch (err){
+            setError(err.message)
         }
+        
+        setIsLoading(false);
 
-        props.navigation.goBack();
+        
     }, [dispatch, prodId, formState]);
 
     useEffect(() => {
@@ -113,6 +146,16 @@ const EditProductScreen = props => {
             input: inputIdentifier
         });
     }, [dispatchFormState])
+
+
+    //Display loading icon if data is loading
+    if (isLoading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size='large' color={Colors.primary} />
+            </View>
+        )
+    }
 
     return (
         <ScrollView>
@@ -254,6 +297,11 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ccc',
         borderBottomWidth: 1
 
+    },
+    centered: {
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center'
     }
 });
 
