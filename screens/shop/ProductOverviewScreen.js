@@ -12,6 +12,7 @@ import Colors from '../../constants/Colors';
 
 const ProductOverviewScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState();
     //Used to get data from state
     const products = useSelector(State => State.products.availableProducts)
@@ -20,14 +21,13 @@ const ProductOverviewScreen = props => {
     //Fuction to load products
     const loadProducts = useCallback (async () => {
         setError(null);
-        setIsLoading(true);
+        setIsRefreshing(true);
         try{
             await dispatch(productsActions.fetchProducts());
         }catch (err){
             setError(err.message)
         }
-
-        setIsLoading(false);
+        setIsRefreshing(false);
     }, [dispatch, setIsLoading, setError])
 
     //listen for changes in the database 
@@ -41,8 +41,11 @@ const ProductOverviewScreen = props => {
 
     //fetch products after dispatch is initialized 
     useEffect(() => {
+        setIsLoading(true);
+        loadProducts().then(() => {
+            setIsLoading(false);
+        });
 
-        loadProducts();
 
     }, [dispatch, loadProducts])
 
@@ -84,6 +87,8 @@ const ProductOverviewScreen = props => {
 
     return (
         <FlatList
+            onRefresh={loadProducts}
+            refreshing={isRefreshing}
             data={products}
             keyExtractor={item => item.id}
             renderItem={itemData => (
