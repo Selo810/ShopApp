@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { 
-    View, 
-    Text, 
-    TextInput, 
+    View,  
     ScrollView, 
     StyleSheet, 
     Platform, 
     Alert, 
     ActivityIndicator, 
-    Button
+
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
