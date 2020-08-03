@@ -44,30 +44,31 @@ export const fetchProducts = () => {
 
 export const deleteProduct = productId => {
 
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        const response = await fetch(`https://rn-complete-guide-3cfd6.firebaseio.com/products/${productId}.json?auth=${token}`, {
+            method: 'DELETE'
+        });
 
-        const response = await fetch(`https://rn-complete-guide-3cfd6.firebaseio.com/products/${productId}.json`, {
-             method: 'DELETE'
-         });
-
-         if(!response.ok){
+        if (!response.ok) {
             throw new Error('Something went wrong!')
         }
- 
-         dispatch({
-            type: DELETE_PRODUCT, 
-            pid: productId 
-         });
-     }
+
+        dispatch({
+            type: DELETE_PRODUCT,
+            pid: productId
+        });
+    }
 
     //return { type: DELETE_PRODUCT, pid: productId };
 }
 
 export const createProduct = (title, description, imageUrl, price) => {
 
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
         //execute any async code we want
-        const response = await fetch('https://rn-complete-guide-3cfd6.firebaseio.com/products.json', {
+        const response = await fetch(`https://rn-complete-guide-3cfd6.firebaseio.com/products.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -105,9 +106,11 @@ export const createProduct = (title, description, imageUrl, price) => {
 
 export const updateProduct = (id, title, description, imageUrl) => {
 
-    return async dispatch => {
+    return async (dispatch, getState) => {
 
-      const response = await fetch(`https://rn-complete-guide-3cfd6.firebaseio.com/products/${id}.json`, {
+        console.log(getState());
+        const token = getState.auth.token;
+        const response = await fetch(`https://rn-complete-guide-3cfd6.firebaseio.com/products/${id}.json?auth=${token}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -119,7 +122,7 @@ export const updateProduct = (id, title, description, imageUrl) => {
             })
         });
 
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error('Something went wrong!')
         }
 
