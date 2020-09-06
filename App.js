@@ -12,6 +12,7 @@ import cartReducer from './store/reducers/cart';
 import orderReducer from './store/reducers/orders';
 import authReducer from './store/reducers/auth';
 import ShopNavigator from './navigation/ShopNavigator';
+import NavigationContainer from './navigation/NavigationContainer';
 
 //Combine different data
 const rootReducer = combineReducers({
@@ -41,7 +42,7 @@ if (!fontloaded){
 
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <NavigationContainer />
     </Provider>
   );
 }
