@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, FlatList, Platform, ActivityIndicator, StyleSheet} from 'react-native';
+import {View, Text, FlatList, Platform, ActivityIndicator, StyleSheet} from 'react-native';
 import { useSelector, useDispatch} from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
@@ -22,7 +22,7 @@ const OrdersScreen = props => {
         });
     }, [dispatch])
 
-
+    
     //Display loading icon if data is loading
     if (isLoading) {
         return (
@@ -31,6 +31,13 @@ const OrdersScreen = props => {
             </View>
         )
     }
+
+    if(!isLoading && orders.length === 0){
+        return <View style={{flex: 1, justifyContent: 'center', alignContent: 'center'}}> 
+            <Text> No orders found</Text>
+        </View>
+    }
+
     
     return <FlatList
         data={orders}

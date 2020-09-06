@@ -13,7 +13,6 @@ import orderReducer from './store/reducers/orders';
 import authReducer from './store/reducers/auth';
 import ShopNavigator from './navigation/ShopNavigator';
 
-
 //Combine different data
 const rootReducer = combineReducers({
   products: productsReducer,

@@ -62,7 +62,7 @@ const ProductOverviewScreen = props => {
         return (
             <View style={styles.centered}>
                 <Text>Error occurred.</Text>
-                ]<Button title="Try again" onPress={loadProducts} color={Colors.primary}/>
+                <Button title="Try again" onPress={loadProducts} color={Colors.primary}/>
             </View>
         )
     }
