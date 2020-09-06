@@ -9,15 +9,16 @@ import { composeWithDevTools} from 'redux-devtools-extension';
 
 import productsReducer from './store/reducers/products';
 import cartReducer from './store/reducers/cart';
-import orderReducer from './store/reducers/orders'
-import ShopNavigator from './navigation/ShopNavigator'
-
+import orderReducer from './store/reducers/orders';
+import authReducer from './store/reducers/auth';
+import ShopNavigator from './navigation/ShopNavigator';
 
 //Combine different data
 const rootReducer = combineReducers({
   products: productsReducer,
   cart: cartReducer,
-  orders: orderReducer
+  orders: orderReducer,
+  auth: authReducer
 });
 
 const store = createStore(rootReducer, composeWithDevTools(), applyMiddleware(ReduxThunk));
